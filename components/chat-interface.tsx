@@ -33,20 +33,48 @@ export function ChatInterface() {
 
     setMessages((prev) => [...prev, userMessage])
 
-    // Simulate bot response
-    setTimeout(() => {
+    // --- REPLACED: call real API instead of simulating response ---
+    async function fetchBotAnswer(question: string) {
+      try {
+        const resp = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question }),
+        })
+
+        if (!resp.ok) {
+          console.error("Chat API error:", resp.status, await resp.text())
+          return {
+            answer: "Server error — try again",
+            sources: [] as Array<{ title: string; url: string }>,
+          }
+        }
+
+        const data = await resp.json()
+        return {
+          answer: data.answer || "No answer found",
+          sources: data.sources || [],
+        }
+      } catch (err) {
+        console.error("Network error", err)
+        return { answer: "Network error — check console", sources: [] }
+      }
+    }
+
+    ;(async () => {
+      const { answer, sources } = await fetchBotAnswer(content)
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: "bot",
-        content: getBotResponse(content, selectedSection),
+        content: answer,
         timestamp: new Date(),
-        sources: [
-          { title: "Gensyn Documentation", url: "https://docs.gensyn.ai" },
-          { title: "Testnet Guide", url: "https://gensyn.ai/testnet" },
-        ],
+        sources: Array.isArray(sources)
+          ? sources.map((s: any) => ({ title: s.title || "Source", url: s.url || "#" }))
+          : [],
       }
       setMessages((prev) => [...prev, botMessage])
-    }, 1000)
+    })()
+    // --- end replacement ---
   }
 
   return (
