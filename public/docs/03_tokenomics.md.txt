@@ -1,0 +1,63 @@
+Gensyn Token Utility 
+
+Payments
+The token is intended to serve as the payment medium inside the Gensyn ecosystem. Submitters (those who request ML compute tasks) will use the token to pay for compute time, model training, inference and other services offered on the network. As described: “The protocol … directly and immediately rewards supply-side participants for pledging their compute time” via smart contracts. Thus, having the token means you can access compute, train models, and deploy workloads on the decentralized network.
+
+Rewards & Staking
+
+On the supply-side, nodes (solvers) that provide compute and complete ML tasks will be rewarded with tokens. There’s also a staking and slashing framework built in: nodes stake tokens to commit to honest work, with slashing in case of mis-behaviour. (This ties into verification/integrity mechanisms) Hence the token also acts as a stake/incentive asset enabling participation, alignment of economic incentives, and securing the network.
+
+Governance
+
+The token also carries governance rights: holders will be able to participate in protocol decisions, vote for council members, submit on-chain proposals, decide on treasury allocations and network upgrades. From the litepaper: “Following the Token Generation Event (TGE) … the Gensyn Foundation will be governed in a decentralised manner by an elected council and make decisions based on on-chain proposals and referenda. 
+
+So summarised:
+
+Payment for compute and services
+Staking + rewards + securing participation
+Governance and decision-making rights
+
+Gensyn Fee Structure
+The fee model within Gensyn is designed to be dynamic and responsive to network conditions rather than fixed flat rates. While exact numbers are not yet published, the mechanism is described in these terms:
+
+Submitters will pay task fees (denominated in the protocol token or via mechanism defined in token) for ML workloads entire payments are handled through smart contracts.
+
+The fee level is influenced by network congestion (how many tasks are queued, how many compute resources are available) and computing demand (size of model, duration of training/inference, hardware required). In other words, when demand is high and resource supply is low, fees would go up; when supply is abundant and demand low, fees would go down.
+
+A small percentage of each task fee is routed to the protocol treasury (governance fund) for future development and ecosystem support. Therefore, the fee model aims to be market-driven, supply/demand based, and sensitive to compute availability and task complexity.
+
+Solver Rewards: Proof-of-Learning Payout
+
+Here’s how rewards for solvers (compute providers) are structured, and what we know:
+The reward source: Rewards come from two main sources: (a) the task fees paid by submitters; (b) possibly token issuance (inflation) or a reward pool defined by the protocol. The litepaper indicates “directly and immediately rewards supply-side participants for pledging their compute time” through smart contracts. Calculation basis: Solvers are rewarded based on successful completion and verification of tasks i.e., passing the proof-of-learning and verification mechanisms (such as the “Verde” protocol) so that the solver’s work is deemed valid. If a solver fails verification, stake may be slashed and reward withheld.
+
+Process summary:
+
+1. A submitter defines a task (ML model, data, hyper-params).
+
+2. Solver takes the task, performs compute/training.
+
+3. Metadata/checkpoints are submitted (proof of learning certificates) and a verifier (or refereed mechanism) validates the work.
+
+4. If verified, the solver receives the token reward as per contract. If not verified, solver’s stake may be forfeited and reward withheld.
+
+Additional nuance: Because of the verification efficiency (the protocol claims >1350% more efficient than classic replication) the cost overhead for verification is low, which helps maintain a good reward ratio.
+
+Total Supply
+
+The total token supply for the Gensyn token is currently labelled “To Be Determined (TBD)”. The official materials do not publish a fixed max supply yet. The litepaper states tokens will be issued at the Token Generation Event (TGE) by the Gensyn Foundation.
+
+Summary Table
+Category	Details
+Token Utility	Payments for compute; staking/rewards for providers; governance rights
+Fee Structure	Dynamic, demand & supply-driven fees; small portion to treasury
+Solver Rewards	Based on successful proof + verification; funded from task fees/incentives
+Total Supply	TBD
+
+Final Notes & Considerations
+
+Because some tokenomic details are not fully published yet (exact supply, exact reward formulas, fee curves) you’ll want to treat this as “confirmed by official docs so far” but expect further specification from the team.
+
+Keep an eye on their upgrade announcements, token generation event (TGE), and on-chain governance proposals these will likely flesh out the fine print.
+
+From your perspective (as an airdrop/participation-oriented user), the key takeaway is: engage early, contribute compute, delve into testnet tasks you’ll likely position yourself to benefit from the staking/ reward/ governance mechanisms once token launch occurs.

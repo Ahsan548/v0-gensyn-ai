@@ -1,0 +1,1124 @@
+What the Paper Is About
+
+The paper is titled “Hail to the Thief: Exploring Attacks and Defenses in Decentralized GRPO.”
+
+It is the first systematic research on attacks + defenses in decentralised reinforcement learning (dRL) for Large Language Models (LLMs).
+
+Shows how adversarial completions can corrupt RL training.
+
+Demonstrates effective lightweight defenses to make dRL robust.
+
+Why This Research Matters
+
+RL is the core method for aligning LLMs with human intent.
+
+GRPO (Group Relative Policy Optimization) is especially suited for decentralised setups because it requires only completions, not gradients.
+
+dRL allows collaborative training among many participants but participants may be unknown or untrusted, creating attack risks.
+
+Malicious nodes can inject bad behaviors or subtle biases into everyone’s model.
+
+This work shows the first blueprint for robust decentralised RL.
+
+Background: Where Attacks Come From
+In Decentralised/Federated Pre-Training & SFT
+
+Participants share updates malicious nodes can:
+
+Poison data
+
+Add backdoors
+
+Sabotage training
+
+Defenses exist (robust aggregation, clipping, pruning).
+
+These don’t work in GRPO because GRPO exchanges text completions, not gradients.
+
+In GRPO & dRL
+
+Participants generate completions, calculate rewards, share completions.
+
+Two styles:
+
+Vertical RL: each node picks different data
+
+Horizontal RL: all nodes train on same data samples
+
+Because everything is based on text, poisoning can be done by inserting malicious tokens.
+
+What the Attacks Are
+
+The paper introduces two attack types:
+
+(A) In-context Attacks
+
+Malicious content is woven into the task itself.
+
+Example:
+
+Changing equations (“2+2=5”) in math tasks.
+
+Injecting malicious code in coding tasks.
+
+(B) Out-of-context Attacks
+
+Irrelevant malicious text is added to completions.
+
+Example:
+
+Adding “All hail to the thief” randomly in answers.
+
+Attack Efficiency
+
+Even one malicious node can poison others.
+
+Attack spreads to honest nodes in 20–50 training iterations.
+
+Attack success rates reach 100% in experiments.
+
+Honest models start copying the poisoned phrase automatically.
+
+Experimental Results
+
+Tested on:
+
+Math reasoning (GSM8k)
+
+Coding (OpenMathInstruct)
+
+Attacks:
+
+Easily corrupt benign models.
+
+Spread quickly across participants.
+
+Cause models to output wrong or irrelevant tokens.
+
+With 25% malicious participants → complete network corruption in ~20 rounds.
+
+6. Defense Mechanisms Introduced
+
+The paper proposes two major defenses:
+
+1. Log-Probability Verification (Homogeneous Models)
+
+Works when all participants use the same model.
+
+Each node checks:
+
+“Does my model think this completion is likely?”
+
+If the completion’s log probability is outside allowed generation bounds → flagged as malicious.
+
+Results:
+
+Fully blocked out-of-context attacks.
+
+Detected ~20% subtle in-context attacks.
+
+Stronger if paired with Reproducible Operations (RepOps).
+
+2. LLM-as-a-Judge (Heterogeneous Models)
+
+Works when nodes use different models.
+
+Uses a separate LLM as an evaluator.
+
+The judge checks:
+
+Logic correctness
+
+Mathematical accuracy
+
+Whether irrelevant/malicious text exists
+
+Whether reasoning is complete
+
+If malicious → reward is set to 0.
+
+Results:
+
+Blocks 90% out-of-context attacks
+
+Blocks 95% in-context math attacks
+
+Struggles with evaluating code tasks.
+
+7. Future Work Proposed
+
+The authors suggest significant future improvements:
+
+Dense (Token-Level) Reward Attribution
+
+Currently GRPO gives a single scalar reward for the entire completion.
+
+This makes poisoning easy because:
+
+One reward affects the entire completion.
+
+Proposed solution:
+
+Give token-level rewards.
+
+Harmful fragments get penalized individually.
+
+Good reasoning steps are preserved.
+
+Requires more detailed evaluators but increases robustness massively.
+
+8. Key Takeaways
+
+Decentralised RL is powerful but vulnerable.
+
+Text-level poisoning attacks can quickly corrupt networks.
+
+Simple defenses can dramatically reduce attack success.
+
+Robustness is essential for future open, decentralised AI training.
+
+This paper establishes the first foundation for secure, scalable dRL.
+
+What CodeZero Actually Is
+
+CodeZero is a new swarm environment inside RL-Swarm, specially designed for collaborative coding.
+
+It extends Gensyn decentralized RL architecture into the domain of code generation.
+
+It introduces a three-role ecosystem:
+
+Proposers
+
+Solvers
+
+Evaluators
+
+These roles interact continuously, forming a self-sustaining training loop.
+
+2. Relationship Between RL-Swarm, CodeZero, and GenRL
+
+RL-Swarm = Application layer where live collaborative ML “swarms” run.
+
+CodeZero = A new environment inside RL-Swarm, focused on coding problems.
+
+GenRL = The underlying framework enabling:
+
+distributed RL,
+
+peer-to-peer training,
+
+multi-agent coordination.
+
+Together these components reflect Gensyn goal of building cooperative, decentralised learning systems.
+
+3. Why CodeZero Was Created
+
+RL-Swarm previously focused on math/logic tasks.
+
+Code tasks introduce:
+
+harder reasoning,
+
+safety concerns,
+
+more complex evaluation.
+
+Coding tasks offer clearer, interpretable feedback.
+
+The network becomes:
+
+safer,
+
+more scalable,
+
+more realistic for real-world training.
+
+4. The Three Roles in CodeZero
+1. Proposers
+
+Create new coding problems.
+
+Automatically increase/decrease difficulty depending on Solver performance.
+
+Keep the network evolving with fresh, challenging tasks.
+
+2. Solvers
+
+Attempt coding challenges.
+
+Learn locally through reinforcement learning loops.
+
+Share completions with the whole swarm for collective improvement.
+
+3. Evaluators
+
+Judge Solver submissions.
+
+Provide structured feedback.
+
+Assign rewards based on:
+
+correctness,
+
+structure,
+
+formatting,
+
+alignment with problem statement.
+
+These three agents create a cycle of:
+Problems → Solutions → Evaluations → Rewards → Better models
+
+5. The New Reward System
+
+Unlike earlier RL-Swarm setups, CodeZero does not execute code.
+
+Execution is unsafe in a decentralized, permissionless network.
+
+Instead, CodeZero uses a rule-based scoring system guided by Evaluators.
+
+Rewards come from:
+
+code validity checks,
+
+adherence to prompt requirements,
+
+reasoning quality,
+
+structure & formatting checks,
+
+model-based estimations of correctness.
+
+This reward model is:
+
+lightweight,
+
+interpretable,
+
+safe,
+
+scalable to many coding tasks.
+
+6. How Learning Happens in CodeZero
+
+Every cycle is an interaction loop:
+
+Solvers get problems from Proposers.
+
+Solvers generate code.
+
+Evaluators grade the code.
+
+Rewards guide Solver improvements.
+
+Proposers increase difficulty when Solvers succeed.
+
+This creates a dynamic, evolving environment.
+
+Over time:
+
+Models teach each other.
+
+Problems get harder as the swarm improves.
+
+A feedback loop emerges:
+Better problems → Better solutions → Better evaluators → Better swarm
+
+This is the start of autonomous research loops inside a decentralized network.
+
+7. Why Coding Tasks Were Chosen
+
+Users might ask this here are the key reasons:
+
+Code is the native reasoning language of machines.
+
+Code is:
+
+verifiable,
+
+interpretable,
+
+structured,
+
+deterministic.
+
+Each coding attempt:
+
+teaches something meaningful,
+
+gives precise signals,
+
+is easy to score safely.
+
+This makes coding ideal for decentralized RL:
+
+safe evaluation,
+
+clear feedback,
+
+collaborative improvement.
+
+In short:
+Coding is the perfect testbed for future cooperative AI systems.
+
+8. The Big Vision
+
+CodeZero pushes Gensyn closer to a world where:
+
+networks of models learn from each other,
+
+propose new ideas,
+
+evaluate solutions,
+
+and automatically improve without centralized control.
+
+The long-term direction:
+
+multiple environments (not just coding)
+
+richer problem types
+
+self-improving autonomous ecosystems
+
+AI agents evolving by working together, not alone
+
+This is central to Gensyn’s mission of:
+decentralised, collaborative, large-scale AI training.
+
+9. What GenRL Enables
+
+Users may ask what sits “under the hood”.
+
+GenRL allows anyone to:
+
+build new swarm environments,
+
+design custom reward models,
+
+test multi-agent learning dynamics,
+
+study cooperative AI behavior.
+
+CodeZero is only one example.
+More environments will come.
+
+10. Getting Started
+
+Anyone can try CodeZero by:
+
+cloning the RL-Swarm repo,
+
+pulling the latest update,
+
+joining the swarm and contributing.
+
+This makes the system open, permissionless, and community-driven.
+
+
+What CodeAssist Actually Is
+
+CodeAssist is an AI coding assistant that trains locally on your machine.
+
+Unlike autocomplete tools, it learns from your edits, your problem-solving patterns, and your style.
+
+It’s an early open-source research prototype showing assistance games applied to real coding work.
+
+Core Idea:
+It becomes a personalized, adaptive partner that grows smarter after every coding session.
+
+2. How CodeAssist Is Different From Usual Coding AI
+
+Users will ask this so here’s the clear answer:
+
+Not just autocomplete
+
+Not a typical agent
+
+Not cloud-trained
+
+Not static
+
+Instead, it's:
+
+Local,
+
+Private,
+
+Adaptive,
+
+Customized to you,
+
+Learning continuously.
+
+The assistant doesn’t replace you it collaborates with you and grows from your feedback.
+
+3. Background: What Are Assistance Games?
+
+Assistance games = cooperative inverse reinforcement learning (CIRL).
+
+AI learns from your interactions, not manually written human feedback.
+
+Removes problems like:
+
+noisy annotations
+
+deceptive RLHF signals
+
+expensive human labeling
+
+CodeAssist applies these ideas to coding for the first time at this scale.
+
+4. Why It Starts With LeetCode Problems
+
+Provides a clear, measurable environment to evaluate improvements.
+
+Safe, structured, consistent tasks.
+
+Lets researchers measure:
+
+agent learning speed
+
+reward accuracy
+
+assistant usefulness
+
+Future versions will support all coding tasks, not just LeetCode.
+
+5. How CodeAssist Works (Technical Breakdown)
+Component The Editor
+
+Monaco-based editor (same as VSCode).
+
+You solve problems here.
+
+Problems stored locally.
+
+Component The State Service
+
+Tracks:
+
+edits,
+
+keystrokes,
+
+interactions,
+
+problem-solving patterns
+
+All data stays fully on your device.
+
+Component The Solution Tester
+
+Runs your code tests instantly.
+
+No external servers involved.
+
+Component  The Models
+
+Two-model system:
+
+Model A  Frozen LLM (Qwen2.5 via Ollama)
+
+Handles text/code generation.
+
+Doesn’t learn or change.
+
+Model B  Trainable Action Selection Model
+
+Learns:
+
+when to help
+
+how to help
+
+how much to intervene
+
+This is YOUR personalized assistant.
+
+Key architecture insight:
+Decision-making (your assistant) and decision-taking (LLM generator) are separate.
+
+6. Training Workflow
+
+You code with the AI in the editor.
+
+Your session is recorded locally.
+
+After finishing tasks:
+
+Go to terminal
+
+Run training
+
+Model learns from:
+What you kept
+What you changed
+What you deleted
+
+With each session, the assistant becomes:
+
+more aligned,
+more helpful,
+more personalized.
+
+7. How You Teach Your Assistant
+
+This is a key user question.
+
+You teach it by:
+
+Keeping good suggestions
+
+Deleting bad suggestions
+
+Your edits ARE the reward signal.
+No explicit reviewing, no “thumbs up/down.”
+
+This makes training natural like mentoring a junior developer.
+
+8. Privacy: Where Does My Data Go?
+
+A BIG question users will ask here’s the answer:
+
+All data is local.
+
+No cloud upload.
+
+No external servers.
+
+You control:
+the model
+the logs
+
+the training data
+
+Optionally, you may choose to:
+
+upload trained models to HuggingFace, get credit on Gensyn testnet leaderboard.
+
+9. Why CodeAssist Matters (Benefits)
+1. Learns Your Collaboration Style
+
+Prefers lightweight hints when you're hands-on.
+Takes larger actions when you're hands-off.
+Learns your style over time.
+
+2. Patience Required
+
+Early sessions establish a baseline.
+
+After a few rounds:
+
+It starts anticipating your moves.
+
+Aligns with your habits.
+
+Becomes noticeably helpful.
+
+3. Bring Your Own Tools
+
+Assistant is model-agnostic.
+
+In future:
+
+you pick your favorite coding model,
+
+your assistant orchestrates them.
+
+4. Open-ecosystem Ready
+
+Works with local/self-hosted models.
+
+No BigTech APIs required.
+
+Privacy-first design.
+
+10. The Bigger Vision
+
+This is what people love asking.
+
+Gensyn long-term direction:
+
+Any task where human preferences exist → assistance games work.
+
+Future CodeAssist versions will support:
+
+doc writing,
+
+debugging,
+
+project structuring,
+
+code review,
+
+general coding workflows.
+
+Every interaction becomes training data but you own it.
+
+You can:
+
+train your assistant,
+
+share your model,
+
+earn points,
+
+contribute to a decentralized collaborative network.
+
+11. How Users Can Get Involved (Practical Steps)
+
+1. Download CodeAssist
+
+Repo includes Docker containers.
+
+Works on:
+
+macOS
+
+Linux
+
+Windows via WSL
+
+2. Start Training
+
+Solve problems → model learns.
+
+3. Upload Progress (Optional)
+
+Push model to HuggingFace.
+
+Earn Gensyn activity points.
+
+
+What SAPO Actually Is
+
+SAPO = Swarm sAmpling Policy Optimization.
+
+It is a meta-algorithm that wraps around any policy-gradient RL algorithm.
+
+Designed specifically for decentralised, asynchronous, collective RL training for language models.
+
+Each node:
+
+trains locally,
+
+generates rollouts,
+
+shares rollouts with swarm,
+
+samples rollouts from others,
+
+updates model,
+
+repeats.
+
+This makes SAPO model-agnostic and device-agnostic.
+
+2. Why SAPO Was Created (Problem Background)
+
+Users commonly ask this — here are clear motivations:
+
+Traditional RL Post-training Problems
+
+Requires centralized GPU clusters.
+
+Expensive.
+
+Fragile and sensitive to training instabilities.
+
+Hard to scale.
+
+Requires carefully synchronized infrastructure.
+
+When many nodes train separately (“silos”), learning is slow and limited.
+
+SAPO Solves These By
+
+Removing centralization.
+
+Removing synchrony.
+
+Using lightweight text rollouts instead of gradients.
+
+Allowing any device (even laptops) to participate.
+
+3. How SAPO Works (Core Mechanism)
+At each node:
+
+Model generates local rollouts.
+
+Node shares these rollouts with the swarm.
+
+Node samples external rollouts from other nodes.
+
+Node updates model using:
+
+its own rollouts,
+
+the sampled external rollouts.
+
+Repeats the cycle.
+
+Rollouts = decoded text, not gradients.
+This makes SAPO:
+
+safer,
+
+lightweight,
+
+and fully model-independent.
+
+The Network Effect
+
+If one node discovers a good strategy (“an aha moment”),
+
+The advantage spreads instantly through rollout sharing,
+
+Accelerating learning across the entire swarm.
+
+4. Key Highlights & Official Results
+Main Claims
+
+~94% improvement in cumulative reward vs isolated RL training.
+
+Faster training with less compute needed per node.
+
+Decentralized nodes outperform siloed single-node RL.
+
+Why It Works
+Rollout sharing introduces:
+collective intelligence,
+diverse experiences,
+more stable learning signals.
+
+5. Experiment Results (Two Official Scenarios)
+A. Controlled Experiments
+
+Details users might ask:
+Tested on ReasoningGYM (algebra, logic, reasoning).
+Model: Qwen2.5 0.5B parameters.
+SAPO configs tested:
+
+4 local / 4 external rollouts = best performance (94% improvement).
+
+Too many external rollouts (2 local / 6 external) = instability.
+Conclusion: Balanced mixing of local + shared experience is essential.
+
+B. Open-Source Demo (Live Swarm)
+
+Thousands of community participants contributed compute.
+Mid-range models:
+performed significantly better with SAPO than training alone.
+High-capacity models:
+only slight gains → suggests potential future improvements needed in:
+filtering,
+sampling strategies,
+reward weighting.
+
+6. Why SAPO Matters (Advantages & Benefits)
+1. Efficiency Without Fragility
+
+No centralized infrastructure risks.
+No need for RL synchronization barriers.
+No cluster failures that halt training.
+
+2. Open, Collaborative Training
+
+Everyone can join regardless of:
+hardware,
+model choice,
+compute budget.
+
+3. Collective Intelligence
+
+Nodes learn from each other.
+Good reasoning spreads.
+Network grows smarter as participation increases.
+
+4. Scalable Post-Training
+
+Decentralization makes RL scalable.
+Removes bottlenecks of cloud GPUs.
+Reduces costs drastically.
+
+7. Looking Ahead (Future Roadmap)
+
+SAPO’s next research directions:
+
+1. More Heterogeneous Swarms
+Mixing different models (sizes, architectures, abilities).
+2. Adaptive Sampling
+Smart selection of which external rollouts to use.
+Reward-sensitive sampling strategies.
+
+3. Beyond Text
+
+Extending SAPO to:
+images,
+multimodal tasks,
+“aesthetic preference sharing”.
+
+ Better Filtering
+
+Allow strong models to pull high-quality signals from weaker nodes without being polluted.
+
+ Why SAPO Is Important for the Future of AI
+
+Users will definitely ask this here’s the clean answer:
+SAPO introduces collective reinforcement learning, where models learn from thousands of peers.
+Helps push reasoning abilities further without extra compute.
+Removes the compute barrier so communities—not corporations—drive AI progress.
+Creates a path for decentralized, collaborative, open AI ecosystems.
+
+SAPO is a major step toward:
+
+democratic post-training,
+breakthrough propagation,
+decentralized AGI collaboration,
+scalable RL for everyone.
+
+Judge is Gensyn system for cryptographically verifiable AI evaluation, built on top of Verde, solving a major problem in today’s AI ecosystem: most model evaluators rely on closed APIs (GPT-5, etc.) that are opaque, silently updated, and impossible to reproduce. Judge replaces this with open, independently checkable evaluations.
+
+Why Judge Exists
+
+AI evaluation is essential but traditionally expensive, inconsistent, and dependent on human experts.
+LLM-as-a-judge is powerful, but closed-source APIs break reproducibility and trust.
+Judge provides an open, verifiable alternative.
+Verde: The Verification Backbone
+
+Judge uses Verde’s refereed delegation system:
+
+multiple untrusted providers run the same task,
+if results disagree, Verde pinpoints the exact operator causing divergence,
+a lightweight referee verifies correctness efficiently.
+No reliance on heavy cryptographic proofs; instead, cryptographically verifiable, reproducible evaluation.
+
+Reproducible Runtime
+
+Judge runs on Gensyn bitwise-deterministic runtime, powered by:
+
+Deterministic CUDA kernels removing floating-point nondeterminism.
+A proprietary compiler that lowers ONNX → Torch with “correctness by construction.”
+Deep protections against nondeterminism (sanitizers, deterministic containers, linting).
+Provenance tracking: every operator in the final PyTorch graph can be traced back to its ONNX source, enabling exact verification during disputes.
+This guarantees determinism, traceability, and reproducibility across devices.
+
+Progressive Reveal Game (Demo Application)
+A reasoning task framed as a prediction market:
+RL-Swarm models place bets on potential answers.
+Evidence appears step-by-step.
+Early correct bets pay more.
+Judge resolves the final answer with Verde-backed verification.
+A clean way to measure reasoning under uncertainty.
+
+Beyond Reasoning
+
+Judge’s framework extends to:
+
+evoluation benchmarks,
+prediction markets,
+decentralized dispute resolution,
+any domain requiring trusted, verifiable model judgments.
+
+
+BlockAssist is an open-source AI assistant for Minecraft that learns directly from your in-game actions. It starts with minimal knowledge and gradually adapts as you play, helping you build and act more efficiently. It’s an early demo of assistance learning, a new method where agents learn human preferences from behavior rather than hand-crafted rewards.
+
+Background
+
+Assistance learning captures preference data automatically from user actions, unlike RLHF, which requires manual labeling. This approach scales more easily and applies to any domain where human goals aren’t explicitly defined or rewards are hard to formalize. Minecraft is the first demo, but broader applications will follow.
+
+How BlockAssist Works
+
+Based on the AssistanceZero framework.
+
+The player and assistant share a hidden goal (e.g., “build a house”).
+Only the human knows the goal; the assistant must infer it.
+The assistant predicts human actions using:
+a neural network,
+
+Monte-Carlo Tree Search (MCTS).
+
+After each gameplay episode:
+actions are recorded,
+used to train an updated model,
+model is uploaded to Hugging Face,
+progress is tracked on Gensyn leaderboard.
+
+Why It Matters
+
+Trains agents from actual human behavior, not labels → higher-quality signals.
+Runs passively while users play, scaling data collection naturally.
+Uses Gensyn permissionless compute network, letting anyone contribute data and compute.
+Demonstrates a path toward aligned agents that learn directly from users across many domains—not just Minecraft.
+
+
+RL-Swarm is an open-source (MIT-licensed) framework for collaborative, peer-to-peer reinforcement learning over the internet. Anyone can run a node—on laptops or datacenter GPUs—and participate in collective RL training.
+
+Why RL-Swarm Exists
+
+Gensyn research shows that:
+
+The future of ML is decentralized, with model shards living across global devices.
+
+RL models learn faster when they train as a collective swarm instead of in isolation.
+
+Communication + critique between models improves reasoning and generalization.
+
+RL-Swarm operationalizes this: nodes coordinate, share results, critique each other, and learn collaboratively.
+
+How It Works (Three-Stage Multi-Agent Loop)
+
+All nodes run Qwen 2.5 (1.5B) and solve GSM8K-style math problems through:
+
+Stage 1 Answering
+
+Each node independently solves a math question and outputs reasoning + final answer.
+
+Stage 2 Critiquing
+
+Nodes review their peers’ responses and provide feedback.
+
+Stage 3 Resolving
+
+Nodes vote on which answer is best, then produce a revised final answer.
+
+This cycle produces better reasoning and more stable learning than solo RL.
+
+What Experiments Show
+Swarm RL reduces training steps needed to reach higher reasoning quality.
+Models improve on unseen test data more efficiently.
+
+Training metrics show:
+
+rising consensus correctness reward,
+higher total rewards through rule-based checks,
+decreasing training loss,
+shorter, more concise completions (models learn to be brief when critiqued).
+Join the Live Swarm
+Users can run swarm nodes at home or in the cloud.
+
+You can:
+
+launch your own swarm,
+join an existing swarm via public address,
+listen to messages,
+
+train your model collaboratively.
+
+Communication uses Hivemind gossiping, enabling distributed learning without central servers.
+RL-Swarm is fully permissionless and designed for large-scale, community-driven RL experiments.
+
+GenRL is RL Swarm’s new backend framework built to make creating advanced, decentralised, multi-agent RL environments far easier and far more scalable. Existing RL frameworks are often centralized or lack native multi-agent support GenRL solves this with a flexible, modular, fully distributed design.
+
+Why GenRL Matters
+
+Modern RL increasingly involves multiple agents interacting in complex environments.
+
+Most frameworks don’t support:
+
+decentralised coordination,
+
+horizontal scaling,
+multi-stage learning cycles.
+GenRL is built specifically for open, permissionless, distributed multi-agent RL, aligning with Gensyn vision.
+
+What GenRL Enables
+
+Native support for multi-agent, multi-stage, distributed reinforcement learning.
+
+Environments with agents that:
+
+learn independently,
+interact,
+coordinate,
+and communicate across open networks.
+Complete customisation of the “game” or RL environment.
+
+Core Architecture (Modular Components)
+1. DataManager
+
+Defines and manages the data the environment uses.
+Can support any domain: text, images, chessboards, custom datasets.
+
+2. RewardManager
+
+Where developers define custom reward functions.
+Shapes agent incentives and overall RL objective.
+
+3. Trainer
+
+Handles two major jobs:
+Train: performs policy updates using any RL algorithm (policy gradients, value methods, etc.).
+Generation: produces rollouts and controls agent interactions in each stage.
+
+4. GameManager
+
+Orchestrates the full RL cycle:
+stages,
+data flow,
+multi-agent communication,
+rollout exchange,
+reward evaluation.
+
+Together, these modules allow researchers to easily build custom RL environments that scale horizontally.
+
+Framework-Defined Progression
+Training is tracked per round.
+Each round:
+DataManager initializes round data.
+
+Agents generate rollouts across multiple stages.
+
+Rollouts are appended to the game state and shared with the swarm.
+Rewards are computed.
+
+Policies are updated (fully customizable in Trainer.train).
+Developers can update policies per stage or per round, depending on the environment design.
+Out-of-the-Box Support
+
+GenRL already integrates with Reasoning Gym, providing 100+ open-source RL environments immediately available to experiment with.
+
+NoLoCo: training large models with no all-reduce
+This is an academic paper describing NoLoCo, a novel optimisation method for distributed training that replaces the global synchronisation step with a gossip method.
+Diverse Expert Ensembles: embarrassingly parallel LLMs from diverse experts
+This is an academic paper that finds benefits to heterogeneity (different model sizes and number of training steps) when training embarrassingly-parallel ensembles of expert models.
+
+SkipPipe: a communication efficient method for decentralised training
+This is an academic paper for efficient communication in pipeline parallel training. It introduces an optimal scheduling algorithm that maximises performance and fault tolerance whilst minimising convergence impact from layer skips.
+
+Verde is a verification protocol for machine learning over untrusted, decentralized nodes, built to keep ML work correct without repeating full training or relying on trusted intermediaries.
+
+ML across diverse hardware normally isn’t reproducible, and cryptographic proofs are too expensive. Verde solves this using refereed delegation: if a verifier disputes a supplier’s output, Verde locates the exact neural-network operator where results diverge. Only that single operation is recomputed, making verification fast and scalable. Suppliers store and hash intermediate checkpoints, keeping overhead low.
+
+To enable this, Verde uses Reproducible Operators (RepOps) a library that enforces bitwise-exact execution across all hardware (GPUs, different generations, etc.). RepOps fixes floating-point nondeterminism by controlling execution order, ensuring honest nodes always produce identical outputs.
+
+Together, Verde + RepOps allow Gensyn’s decentralized compute market to verify large-scale ML work cheaply, efficiently, and reliably — without trusted servers, without whitelists, and without expensive ZK proofs.
+
+AI training costs are exploding, with frontier runs approaching $10B–$100B, limiting progress to a handful of companies. This concentration restricts innovation, slows research, and prevents smaller labs from experimenting at modern scale. Gensyn argues that the next leap in AI won’t come from ever-larger centralized clusters, but from a decentralized, globally distributed training network—similar in spirit to SETI@home and Folding@home, which historically achieved supercomputer-level performance by crowdsourcing volunteer compute.
+
+Volunteer compute has repeatedly unlocked breakthroughs:
+
+SETI@home analyzed radio signals using millions of devices.
+
+Folding@home surpassed 1 exaFLOPS during COVID, outperforming the world’s top supercomputers.
+
+BOINC produced nearly 1,000 scientific papers via crowdsourced compute.
+
+Deep learning traditionally couldn’t adopt this model because of heavy communication demands, lack of fault tolerance, and massive scale requirements. Training today’s frontier models involves large clusters of GPUs tightly synchronized using methods like data parallelism, tensor parallelism, pipeline parallelism, and 3D parallelism—techniques that break down over slow, unreliable internet-connected devices.
+
+However, recent breakthroughs are shifting the landscape. Communication-efficient methods like DiLoCo, lo-fi, DisTrO, and federated variants dramatically reduce or eliminate cross-node communication. New model-parallel approaches like DiPaCo, SWARM Parallelism, and DTFMHE show that large models can train over heterogeneous devices with modest bandwidth, while still achieving competitive performance. Fault-tolerant approaches—like adaptable pipelines (SWARM), redundancy templates (Oobleck), and decentralized MoE architectures—ensure training continues despite node failures.
+
+On the scale side, cryptographic incentive systems (e.g., Bitcoin, Ethereum) prove that decentralized networks can sustain hundreds of millions of GPUs or ASICs over many years—far beyond what any AI lab can centralize. With the right incentives, a decentralized training network could surpass today’s cloud clusters by orders of magnitude.
+
+Taken together, these trends point toward a future where AI training moves beyond centralized data centers. Edge devices will become part of a global training cluster, enabling elastic scaling, lowering costs, and re-opening the frontier to independent researchers. To get there, we need:
+
+better scheduling over heterogeneous hardware,
+
+networking protocols for open ML clusters,
+
+verification systems for untrusted devices,
+
+and new architectures optimized for decentralized training.
+
+The momentum is already here: Petals, Hivemind, BigScience, sahajBERT, Bloom, and Gensyn’s own infrastructure demonstrate growing community interest. Decentralized training may be the path that breaks today’s compute bottleneck and restores open, collaborative advancement in AI.

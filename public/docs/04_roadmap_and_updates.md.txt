@@ -1,0 +1,24 @@
+Past Milestones
+
+Funding rounds & investor backing Gensyn has raised over $50 million in total from multiple funding rounds: a pre-seed (~$1.1 M in Jan 2021), seed (~$6.5 M in Mar 2022) and a Series A (~$43 M led by Andreessen Horowitz [a16z] in Jun 2023).
+
+Public Testnet launch The Gensyn Public Testnet was launched in March 2025, This marked the first live, open network phase where participants could run nodes, train models, contribute to swarms, and test the protocol under real-world conditions.
+
+Research outputs & open source releases Gensyn has published research in key areas: e.g., “NoLoCo: training large models with no all-reduce”, “SkipPipe”, “CheckFree”, etc. Also open‐source code-repos (e.g., RL-Swarm, CodeAssist, BlockAssist) have been made public.
+
+Performance/infrastructure case-study In the case study with Alchemy, Gensyn reported milestones like “450,000+ daily transactions”, “98.9% reduction in operational costs” in certain infrastructure components.
+
+
+Future Phases / Roadmap
+
+The Testnet roadmap outlines multiple phases: The Testnet “Phase 0” is the current focus (tracking participation via RL Swarm) and the network documentation indicates that as phases progress, more applications (full ML lifecycle from pre-training to inference) will be enabled and ultimately the system will culminate in a Mainnet launch carrying “real economic value” on chain.
+
+Upcoming features mentioned include expanding the network beyond swarms into full model training, inference, and marketplace operations. E.g., new application launches like BlockAssist, CodeAssist (which are already underway) act as steps toward full deployment. The roadmap hints that the Mainnet will integrate true token economics, staking, verification, incentive layers, and real value flow once the infrastructure is fully vetted via Testnet.
+
+Partnerships & Integrations
+
+Gensyn has worked with Alchemy (as per the case-study) on rollup infrastructure and smart wallet integration. While detailed public announcements of large partner firms are more limited, the funding rounds include institutional backers (a16z, CoinFund, etc.) which themselves act as strategic partners. The open-source ecosystem integrations (RL Swarm, CodeAssist, BlockAssist) form internal “partnerships” between Gensyn’s infrastructure and developer communities. There’s mention in external commentary that Gensyn could integrate with ecosystems of decentralized compute/hardware networks, though explicit brand partnerships besides Alchemy are not widely publicised at the moment. 
+
+Latest Updates
+
+April 30 2025: Gensyn Testnet updated with a new swarm with a more difficult dataset and larger models (up to 72B parameters). June 25 2025: Launch of RL Swarm’s new backend: GenRL. August 6 2025: Release of BlockAssist, an open-source AI assistant that learns via Minecraft gameplay. November 5 2025: Launch of CodeAssist, an assistance-learning app where the model trains from your coding edits and runs locally. November 12 2025: Introduction of CodeZero, a new RL-Swarm environment for collaborative code generation (Proposer/Solver/Evaluator roles) 

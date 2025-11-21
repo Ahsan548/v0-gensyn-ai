@@ -1,0 +1,150 @@
+## Q1: What is the main utility of a decentralized compute network like Gensyn?
+**Answer:** The main utility is providing cheap, permissionless, and censorship-resistant access to computing power for training AI/ML models, breaking the monopoly of centralized cloud providers.
+
+## Q2: Is Gensyn a Layer 1 blockchain or a protocol?
+**Answer:** Gensyn is a decentralized **protocol** that operates on top of existing blockchains (like Ethereum) to handle the complex verification of machine learning workloads.
+
+## Q3: Who are the key founders of Gensyn?
+**Answer:** Gensyn was founded by CEO Ben Fielding and Harry Grieve.
+
+## Q4: When is the Gensyn Mainnet expected to launch?
+**Answer:** The exact Mainnet launch date is currently **To Be Determined (TBD)**, but the project is moving through specific Testnet phases outlined in its official roadmap.
+
+## Q5: What is the significance of the "Self-Organising Network of Compute"?
+**Answer:** This refers to Gensyn ability to dynamically aggregate compute resources from various sources (data centers, consumer GPUs) worldwide into a single, cohesive, and auto-regulating cluster.
+
+## Q6: Does Gensyn use NFTs for its network?
+**Answer:** While Gensyn core product is compute, the protocol may use non-fungible components (like reputation scores or unique hardware IDs) in its mechanism, though core computation is not NFT-based.
+
+## Q7: How does Gensyn handle privacy for the models being trained?
+**Answer:** Gensyn is designed to keep data and model weights private during the transfer and training process using cryptographic techniques and the decentralized nature of the network.
+
+## Q8: What kind of models can be trained on Gensyn?
+**Answer:** Gensyn supports training for various Machine Learning models, including deep learning, neural networks, and specifically complex models that require high computational resources.
+
+## Q9: Who are the main investors or backers of Gensyn?
+**Answer:** Gensyn has received significant backing from leading venture capital firms, including a16z crypto, CoinFund, and Eden Block, among others.
+
+## Q10: Where is the Gensyn team primarily located?
+**Answer:** Gensyn operates globally, but it has strong roots and is often associated with the UK and Europe tech sectors.
+## Q11: What is the most innovative part of Gensyn's technology?
+**Answer:** The most innovative part is the Proof-of-Learning (PoL) protocol, which allows for trustless, cryptographic verification of arbitrary machine learning computation.
+
+## Q12: How is Proof-of-Learning (PoL) different from Proof-of-Work (PoW)?
+**Answer:** PoW verifies general computation (like mining), while PoL is specifically designed to verify the correctness of **machine learning model training** computation efficiently and probabilistically.
+
+## Q13: What role does "Verde" play in the protocol?
+**Answer:** Verde is the name of the Gensyn verification mechanism that manages the probabilistic challenge system, ensuring Solvers are honest and submit correct proof of work.
+
+## Q14: What is a "Probabilistic Proof-of-Learning"?
+**Answer:** Instead of checking the entire job (which is computationally expensive), the system randomly checks small, specific slices or checkpoints of the trained model to probabilistically confirm its correctness.
+
+## Q15: How does Gensyn prevent Sybil attacks or malicious Solvers?
+**Answer:** Malicious Solvers face severe penalties, including the slashing of their staked GSN tokens and a reduction in their reputation score, making it financially unviable to cheat.
+
+## Q16: What is a "Solver"?
+**Answer:** A Solver is a participant who provides their idle GPU/CPU hardware and compute resources to the Gensyn network to execute training jobs and earns tokens as a reward.
+
+## Q17: What is a "Submitter"?
+**Answer:** A Submitter is a user or developer who pays Gensyn Tokens to the network to get their specific Machine Learning training jobs executed by the Solvers.
+
+## Q18: What type of hardware is compatible with Gensyn?
+**Answer:** Gensyn is designed to be hardware-agnostic, supporting a wide range of distributed compute resources, from high-end data-center GPUs to underutilized consumer-grade hardware.
+
+## Q19: How are computation tasks distributed across the network?
+**Answer:** Tasks are efficiently distributed using an optimized matching algorithm that connects Submitters with the best available Solvers based on performance, cost, and availability.
+
+## Q20: Does Gensyn use Smart Contracts?
+**Answer:** Yes, the protocol relies heavily on smart contracts to automate the job submission, payment, staking, and verification processes in a trustless manner.
+
+## Q21: What happens if a Solver fails a verification check?
+**Answer:** If a Solver fails the verification check (meaning they were dishonest), their staked GSN tokens are immediately slashed (penalized), and the job is re-routed to a different Solver.
+
+## Q22: Is the communication encrypted between Submitters and Solvers?
+**Answer:** Yes, the communication and data transfer protocols are secured with state-of-the-art encryption to ensure the privacy and integrity of the model weights and data.
+
+## Q23: What is "low-latency communication" in the Gensyn context?
+**Answer:** This refers to Gensyn system (like NoLoCo) that reduces the delay (latency) in communication between distributed hardware nodes, which is essential for successful, fast ML training.
+
+## Q24: Can I stake my GSN tokens without providing compute?
+**Answer:** While staking is central to the security model, the primary staking role is tied to Solvers. However, the governance aspect may allow general token holders to participate in voting.
+
+## Q25: How does the network choose which Solver handles which job?
+**Answer:** The network uses an efficient market-driven pricing mechanism that matches job requirements (e.g., specific GPU type, required latency) with available Solver capabilities.
+
+
+## Q26: What is the utility of the Gensyn Token?
+**Answer:** The token's utility revolves around paying for compute (fees), staking/collateral to ensure honest participation (security), and providing voting power (governance) within the DAO.
+
+## Q27: How are Submitters charged for their training jobs?
+**Answer:** Submitters pay a fee in the Gensyn Token based on the required computing power, time, and network demand.
+
+## Q28: Where does the reward for Solvers come from?
+**Answer:** Solvers are primarily rewarded from the fees paid by Submitters for their jobs. Additional rewards may come from a designated token allocation or network subsidy.
+
+## Q29: What is the "inflation/deflation" mechanism of the token?
+**Answer:** The protocol is designed to achieve long-term economic stability, potentially using fee burning (deflationary pressure) and calculated emissions (inflationary pressure) to incentivize growth while maintaining token value.
+
+## Q30: Why must Solvers stake Gensyn Tokens?
+**Answer:** Solvers must stake tokens as collateral. This stake is a security mechanism: if they attempt to cheat, their staked tokens are slashed, providing a strong financial incentive for honesty.
+
+## Q31: Is the token an ERC-20 token?
+**Answer:** Yes, the native Gensyn Token is confirmed to be an ERC-20 compliant token, compatible with the Ethereum ecosystem.
+
+## Q32: What happens to the fees collected by the network?
+**Answer:** The fees collected are typically split: a portion goes to the Solvers as rewards, and another portion may go to the treasury, or be burned, to maintain the network's economic health.
+
+## Q33: When will the official Token Ticker be announced?
+**Answer:** The official token ticker and final supply figures will be officially announced closer to the Mainnet launch, following necessary legal and strategic considerations.
+
+## Q34: Can I buy the Gensyn Token right now?
+**Answer:** No. As of now, the token is not publicly available for purchase or sale. Any platform claiming to sell the token is likely operating a scam.
+
+## Q35: Will there be a Token Generation Event (TGE)?
+**Answer:** While not fully detailed, most major crypto protocols have a TGE to initially distribute tokens, and Gensyn is expected to follow standard practices for its launch.
+
+## Q36: Is the price of computation static on the Gensyn network?
+**Answer:** No, the price is dynamic and market-driven. It adjusts in real-time based on the available supply of compute power and the current demand from Submitters.
+
+## Q37: How does the protocol ensure fair pricing for compute?
+**Answer:** The decentralized market mechanism ensures fair pricing, as Solvers compete to offer their resources, preventing any single entity from dictating high prices.
+
+## Q38: Will there be a treasury for the Gensyn DAO?
+**Answer:** Yes, a treasury funded by transaction fees will be essential for funding future development, grants, and supporting the decentralized autonomous organization (DAO) governance.
+
+## Q39: What is the initial token distribution plan?
+**Answer:** The distribution plan (team, investors, community, foundation) will be detailed in the final tokenomics paper, prioritizing network decentralization and long-term viability.
+
+## Q40: What is the minimum staking requirement for Solvers?
+**Answer:** The minimum staking amount will be determined by the protocol's risk model, but it will be set at a level high enough to deter fraud while remaining accessible to legitimate Solvers.
+
+
+## Q41: How can I become a Gensyn Pioneer?
+**Answer:** Pioneer roles are typically granted to early community members who show exceptional contribution through technical work, content creation, and community building, often through application waves.
+
+## Q42: What is the role of a Gensyn Rover?
+**Answer:** Rovers are high-level Pioneers responsible for specific tasks like managing regional communities, contributing significant code/tools, or creating official educational materials.
+
+## Q43: How can I contribute if I am not a developer?
+**Answer:** You can contribute by creating educational content, managing community groups, providing non-technical translations, and giving feedback on documentation and user experience.
+
+## Q44: Where should I look for the latest Gensyn roadmap updates?
+**Answer:** Official roadmap updates are released on the Gensyn blog and main announcement channels, often broken down by Testnet phases and main engineering goals.
+
+## Q45: Does Gensyn plan to support WebAssembly (Wasm) or other runtimes?
+**Answer:** Gensyn aims for broad compatibility and will likely integrate support for various runtimes and frameworks popular in the ML community to maximize utility.
+
+## Q46: What is the current focus of the Gensyn Testnet?
+**Answer:** The current Testnet focuses on rigorously testing the core components: the Proof-of-Learning verification mechanism, network stability, and optimizing the decentralized market matching.
+
+## Q47: Does Gensyn have a bug bounty program?
+**Answer:** Yes, like most security-focused protocols, Gensyn runs a public bug bounty program to reward community members for responsibly discovering and reporting vulnerabilities.
+
+## Q48: What is Gensyn plan for decentralized governance?
+**Answer:** Gensyn plans to transition to a decentralized governance model (DAO) where token holders can vote on key protocol changes, fee structures, and treasury allocations.
+
+## Q49: What is the best community platform to ask technical questions?
+**Answer:** The official Gensyn Discord server is the best platform for asking technical questions, finding Solver guides, and getting direct support from the development team and other Pioneers.
+
+## Q50: How will the Gensyn project attract large enterprises to use its network?
+**Answer:** Gensyn will attract enterprises by offering significantly lower compute costs, superior privacy, and the ability to access vast amounts of specialized, distributed hardware that centralized clouds often lack.
