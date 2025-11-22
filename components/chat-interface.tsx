@@ -2,15 +2,15 @@ const handleSendMessage = async (content: string) => {
   console.log("[v0] Sending message:", content);
 
   const userMessage: Message = {
-    id: Date.now().toString(),
+    id: (typeof crypto !== "undefined" && (crypto as any).randomUUID) ? (crypto as any).randomUUID() : Date.now().toString(),
     type: "user",
     content,
     timestamp: new Date(),
   };
   setMessages(prev => [...prev, userMessage]);
 
-  // Add a temporary "bot typing" placeholder
-  const pendingId = (Date.now()+1).toString();
+  // Create a stable pending id for the bot placeholder
+  const pendingId = (typeof crypto !== "undefined" && (crypto as any).randomUUID) ? (crypto as any).randomUUID() : (Date.now()+1).toString();
   const botPlaceholder: Message = {
     id: pendingId,
     type: "bot",
@@ -19,31 +19,67 @@ const handleSendMessage = async (content: string) => {
   };
   setMessages(prev => [...prev, botPlaceholder]);
 
+  // timeout via AbortController (e.g. 20s)
+  const controller = new AbortController();
+  const timeoutMs = 20_000;
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
   try {
     const r = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ question: content }),
+      signal: controller.signal,
     });
 
-    if (!r.ok) throw new Error(`API ${r.status} ${r.statusText}`);
+    clearTimeout(timeout);
+
+    if (!r.ok) {
+      // try to grab error message from JSON
+      let errText = `${r.status} ${r.statusText}`;
+      try {
+        const errJson = await r.json();
+        if (errJson && errJson.error) errText = errJson.error;
+      } catch (e) { /* ignore */ }
+      throw new Error(`API ${errText}`);
+    }
+
     const json = await r.json();
+
     const botMessage: Message = {
-      id: (Date.now()+2).toString(),
+      id: (typeof crypto !== "undefined" && (crypto as any).randomUUID) ? (crypto as any).randomUUID() : (Date.now()+2).toString(),
       type: "bot",
-      content: json.answer || "No answer.",
+      content: String(json.answer || "No answer."),
       timestamp: new Date(),
       sources: (json.sources || []).map((s: any) => ({ title: s.title, url: s.url })),
     };
 
-    // replace last placeholder with real answer
-    setMessages(prev => prev.map(m => (m.id === pendingId ? botMessage : m)));
+    // Replace placeholder if present, otherwise append
+    setMessages(prev => {
+      let replaced = false;
+      const next = prev.map(m => {
+        if (m.id === pendingId) {
+          replaced = true;
+          return botMessage;
+        }
+        return m;
+      });
+      if (!replaced) next.push(botMessage);
+      return next;
+    });
   } catch (err: any) {
+    clearTimeout(timeout);
     console.error("Chat API error:", err);
-    setMessages(prev => prev.map(m => (m.id === pendingId ? {
-      ...m,
-      content: "Server error — try again",
-      // optionally attach error detail in console only
-    } : m)));
+
+    // Replace placeholder with friendly error text
+    setMessages(prev => prev.map(m => {
+      if (m.id === pendingId) {
+        return {
+          ...m,
+          content: "Server error — try again",
+        };
+      }
+      return m;
+    }));
   }
 };
