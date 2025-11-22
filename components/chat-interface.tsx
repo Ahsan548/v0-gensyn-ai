@@ -1,127 +1,49 @@
-"use client"
+const handleSendMessage = async (content: string) => {
+  console.log("[v0] Sending message:", content);
 
-import { useState } from "react"
-import { NavigationSidebar } from "@/components/navigation-sidebar"
-import { ChatArea } from "@/components/chat-area"
-import { ContextualPane } from "@/components/contextual-pane"
-import { MessageComposer } from "@/components/message-composer"
-import { Menu, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
+  const userMessage: Message = {
+    id: Date.now().toString(),
+    type: "user",
+    content,
+    timestamp: new Date(),
+  };
+  setMessages(prev => [...prev, userMessage]);
 
-export interface Message {
-  id: string
-  type: "user" | "bot"
-  content: string
-  timestamp: Date
-  sources?: Array<{ title: string; url: string }>
-}
+  // Add a temporary "bot typing" placeholder
+  const pendingId = (Date.now()+1).toString();
+  const botPlaceholder: Message = {
+    id: pendingId,
+    type: "bot",
+    content: "Thinking...",
+    timestamp: new Date(),
+  };
+  setMessages(prev => [...prev, botPlaceholder]);
 
-export function ChatInterface() {
-  const [messages, setMessages] = useState<Message[]>([])
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
-  const [selectedSection, setSelectedSection] = useState("Overview")
+  try {
+    const r = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: content }),
+    });
 
-  const handleSendMessage = (content: string) => {
-    console.log("[v0] Sending message:", content)
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      type: "user",
-      content,
+    if (!r.ok) throw new Error(`API ${r.status} ${r.statusText}`);
+    const json = await r.json();
+    const botMessage: Message = {
+      id: (Date.now()+2).toString(),
+      type: "bot",
+      content: json.answer || "No answer.",
       timestamp: new Date(),
-    }
+      sources: (json.sources || []).map((s: any) => ({ title: s.title, url: s.url })),
+    };
 
-    setMessages((prev) => [...prev, userMessage])
-
-    // --- REPLACED: call real API instead of simulating response ---
-    async function fetchBotAnswer(question: string) {
-      try {
-        const resp = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question }),
-        })
-
-        if (!resp.ok) {
-          console.error("Chat API error:", resp.status, await resp.text())
-          return {
-            answer: "Server error — try again",
-            sources: [] as Array<{ title: string; url: string }>,
-          }
-        }
-
-        const data = await resp.json()
-        return {
-          answer: data.answer || "No answer found",
-          sources: data.sources || [],
-        }
-      } catch (err) {
-        console.error("Network error", err)
-        return { answer: "Network error — check console", sources: [] }
-      }
-    }
-
-    ;(async () => {
-      const { answer, sources } = await fetchBotAnswer(content)
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        type: "bot",
-        content: answer,
-        timestamp: new Date(),
-        sources: Array.isArray(sources)
-          ? sources.map((s: any) => ({ title: s.title || "Source", url: s.url || "#" }))
-          : [],
-      }
-      setMessages((prev) => [...prev, botMessage])
-    })()
-    // --- end replacement ---
+    // replace last placeholder with real answer
+    setMessages(prev => prev.map(m => (m.id === pendingId ? botMessage : m)));
+  } catch (err: any) {
+    console.error("Chat API error:", err);
+    setMessages(prev => prev.map(m => (m.id === pendingId ? {
+      ...m,
+      content: "Server error — try again",
+      // optionally attach error detail in console only
+    } : m)));
   }
-
-  return (
-    <div className="flex h-screen bg-background overflow-hidden">
-      {/* Mobile Navigation Toggle */}
-      <div className="lg:hidden fixed top-4 left-4 z-50">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setMobileNavOpen(!mobileNavOpen)}
-          className="bg-card/80 backdrop-blur"
-        >
-          {mobileNavOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </Button>
-      </div>
-
-      {/* Left Navigation Sidebar */}
-      <NavigationSidebar
-        isOpen={mobileNavOpen}
-        onClose={() => setMobileNavOpen(false)}
-        selectedSection={selectedSection}
-        onSectionChange={setSelectedSection}
-      />
-
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <ChatArea messages={messages} onSend={handleSendMessage} />
-        <MessageComposer onSend={handleSendMessage} />
-      </div>
-
-      {/* Right Contextual Pane */}
-      <ContextualPane />
-    </div>
-  )
-}
-
-function getBotResponse(question: string, section: string): string {
-  const responses: Record<string, string> = {
-    Overview: `Gensyn is a deep learning compute protocol that enables permissionless access to GPU compute for AI training. The network connects compute providers with those who need computational resources for machine learning tasks.`,
-    Tokenomics: `The Gensyn token economics are designed to incentivize compute providers and maintain network security. Token allocations include compute rewards, staking incentives, and ecosystem development funds.`,
-    Technology: `Gensyn uses a novel probabilistic proof of learning system to verify that compute has been performed correctly. This allows for trustless verification of machine learning computation on distributed hardware.`,
-    Governance: `Gensyn governance is community-driven, with token holders able to vote on protocol upgrades, parameter changes, and ecosystem initiatives. Proposals follow a structured timeline with discussion and voting periods.`,
-    Roadmap: `The current roadmap includes testnet expansion, mainnet preparation, and additional feature releases. Check the official documentation for the latest milestone updates and timelines.`,
-  }
-
-  return (
-    responses[section] ||
-    `I can help you with questions about Gensyn's ${section.toLowerCase()}. What would you like to know specifically?`
-  )
-}
+};
